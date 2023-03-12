@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+<br/>
+
+<br/>
+    <div class="input-group justify-content-center">
+        <img src="{{ url_for('static', filename='img/nlnog.png') }}">
+    </div>
+<p>
+<h2>
+About the NLNOG Looking Glass
+</h2>
+This Looking Glass is hosted by <a href="https://nlnog.net">NLNOG</a>, The Dutch Network Operators Group. The Looking Glass runs <a href="http://openbgpd.org/">OpenBGPD</a> as backend and a custom made front end written by Teun Vink,
+for which the source code can be found <a href="https://www.github.com/NLNOG/lg.ring.nlnog.net">on GitHub</a>. The code was inspired on <a href="https://github.com/sileht/bird-lg/">bird-lg</a> by Mehdi Abaakouk.
+</p>
+<p>
+The Looking Glass is managed by the NLNOG RING Administrators which can be reached at <a href=""mailto:ring-admins@nlnog.net">ring-admins@nlnog.net</a>.
+You can contact them for questions, reporting issues or setting up new BGP sessions with the Looking Glass server.
+</p>
+<h3>Known BGP Communities</h3>
+<p>
+This Looking Glass uses a collection of known BGP communities to provide additional information on routes received. A list of ASNs for which communities are known can be found <a href="https://github.com/NLNOG/lg.ring.nlnog.net/tree/main/communities">here</a>.</p>
+<p>New community descriptions and updates can be added sending a pull request on the <a href="https://github.com/NLNOG/lg.ring.nlnog.net/">Github repostory</a>, which also provides information on the file format. For any questions, feel free to contact the <a href=""mailto:ring-admins@nlnog.net">ring-admins@nlnog.net</a>.
+<p>
+<h3>Peering with the Looking Glass</h3>
+Peering with this Looking Glass is optional for ring users. If you want to peer with NLNOG Looking Glass, send us your details or <a href="https://github.com/NLNOG/ring-ansible/blob/master/roles/openbgpd/vars/peers.yml">create a pull-request</a>, and configure a session with the following information:
+<pre>
+
+    AS: 199036
+    IPv4: 212.114.120.72 (lg02.infra.ring.nlnog.net)
+    IPv6: 2001:7b8:62b:1:0:d4ff:fe72:7848 (lg02.infra.ring.nlnog.net)
+    Type: eBGP Multi-Hop
+    Policy: import NONE from AS199036, export ANY
+
+</pre>
+Our looking glass supports 'add-path', so if supported on your side, feel free to configure it.
+<p></p>
+<h3>Sponsor</h3>
+Hosting of this Looking Glass is generously sponsored by <a href="https://bit.nl">BIT</a>.
+</p>
+<h3>Changelog</h3>
+Here's a very incomplete list of some of the changes to this looking glass:
+<pre>
+    2023-02-03  - add support for ASPA validation states
+
+    2022-12-30  - fix for confederations in maps
+                - allow selections of peers to query
+                - added colored nodes to maps
+                - allow download of dot source for maps
+                - show if ASNs have NLNOG RING nodes
+
+    2022-11-22  - add the possibility to store preferences in cookies
+                - add AS numbers on the <a href="/summary">BGP peer summary</a> page
+                - add a favicon!
+
+    2022-11-13  - add a 'persistent link' option so results can be stored
+                - add a 'copy to clipboard' option on the plain text output page
+                - sort on prefixlen and then peer names in the output
+                - link the small map to the full size map
+                - nicer plain text output
+
+    2022-09-21  - add support for map output
+
+    2022-09-19  - first public release
+</pre>
+
+{% endblock %}

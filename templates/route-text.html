@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block body %}
+<br/>
+<h2>
+    Routes found{% if peer != 'all' %} on {{ peer | join(', ') }}{% endif %} for '{{ prefix }}'
+</h2>
+    <a href="/prefix/map?saved={{query_id}}" class="btn btn-primary btn-sm" style="margin-bottom: 0.25rem; line-height: 1.2;"><i class="bi bi-map"></i> map</a>
+    <a href="/prefix/html?saved={{query_id}}" class="btn btn-primary btn-sm" style="margin-bottom: 0.25rem; line-height: 1.2;"><i class="bi bi-code"></i> tables</a>
+    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticModal" style="margin-bottom: 0.25rem; line-height: 1.2;"><i class="bi bi-link-45deg"></i> permalink</button>
+    <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText(document.getElementById('routes').innerText)" style="margin-bottom: 0.25rem; line-height: 1.2;"><i class="bi bi-clipboard"></i> copy</button>
+    <a href='/prefix/text?q={{prefix}}{% for p in peer %}&peer={{p}}{% endfor %}&match={{match}}' class="btn btn-primary btn-sm" style="margin-bottom: 0.25rem; line-height: 1.2;"><i class="bi bi-arrow-clockwise"></i> renew</a>
+
+<br/>
+  <!-- Modal -->
+  <div class="modal fade" id="staticModal" tabindex="-1" aria-labelledby="staticModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticModalLabel">Permalink</h5>
+          <button type="button" class="btn-close btn-sm" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            The current looking glass output is stored at:
+            <pre>
+
+<a href="{{request.host_url}}prefix?saved={{query_id}}">{{request.host_url}}prefix?saved={{query_id}}</a></pre>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary btn-sm" onclick="navigator.clipboard.writeText('{{request.host_url}}prefix?saved={{query_id}}');">Copy URL</button>
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<div id="routes">
+{% if routes | length == 0 %}
+    <div class="alert alert-danger" role="alert">No matching routes found.</div>
+{% else %}
+<pre>
+{% if collected %}
+This data previously was collected at: <strong>{{ collected }}</strong>
+{% endif %}
+{% for prefix  in routes %}
+<div class="prefix">Prefix: {{ prefix }} ({{ routes[prefix] | length }} items)</div>
+* <a href="https://irrexplorer.nlnog.net/prefix/{{prefix}}">IRR Explorer</a>
+* <a href="/whois?q={{prefix}}" class="whois">WHOIS</a>
+{%- for route in routes[prefix] %}
+<div class="peername">  {{route.peer }}</div>
+    AS-Path:                  {% for as in route.aspath %}{% if as[0] == '{' or as[0] == '}'%}{{ as[0] }}{% else %}<span data-toggle="tooltip" data-placement="top" title="{{ as[1] }}{% if as[0]|int in ringnodes.keys() %}<br><span class=ringnodes>{{ ringnodes[as[0]|int]|length}} NLNOG RING node{% if ringnodes[as[0]|int]|length > 1 %}s{% endif %}</span>{% endif %}"><a href="/whois?q={{ as[0] }}" class="whois asnumber">{{ as[0] }}</a></span>{% endif %} {% endfor %}{% if route.origin == "IGP" %}I{% elif route.origin == "EGP" %}E{% else %}?{% endif %}
+    Next-hop:                 <a href="/whois?q={{ route.exit_nexthop }}" class="whois">{{ route.exit_nexthop }}</a>
+    Origin validation state:  <span class="{{route.ovs}}">{{route.ovs}}</span>
+    ASPA validation state:    <span class="{{route.avs}}">{{route.avs}}</span>
+    MED:                      {{route.metric}}
+    Last update:              {{route.last_update_at}} ({{route.last_update}} ago)
+{%- if route.communities %}
+    Communities:              {% for community in route.communities %}{% if community[1] %}<span class="community" data-toggle="tooltip" data-placement="bottom" animation="true" title="{{ community[1] }}">{{ community[0] }}</span>{% else %}<span class="unknown_community">{{ community[0] }}</span>{% endif %} {% endfor %}{% endif %}
+{%- if route.extended_communities %}
+    Extended communities:     {% for community in route.extended_communities %}{% if community[1] %}<span class="community" data-toggle="tooltip" data-placement="bottom" animation="true" title="{{ community[1] }}">{{ community[0] }}</span>{% else %}<span class="unknown_community">{{ community[0] }}</span>{% endif %} {% endfor %}{% endif %}
+{%- if route.large_communities %}
+    Large communities:        {% for community in route.large_communities %}{% if community[1] %}<span class="community" data-toggle="tooltip" data-placement="bottom" animation="true" title="{{ community[1] }}">{{ community[0] }}</span>{% else %}<span class="unknown_community">{{ community[0] }}</span>{% endif %} {% endfor %}{% endif %}
+{% endfor %}{% endfor %}
+
+</pre>
+{% endif %}
+</div>
+{% endblock %}

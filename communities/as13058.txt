@@ -1,0 +1,25 @@
+# serve-u / FMT32 communities -- contact noc@fmt32.net for any questions
+13058:1001,Local originated A-side
+13058:1002,Local originated B-side
+13058:1100,Locally held
+13058:1510,Learned from direct peer
+13058:1550,Learned from direct peer at IX
+13058:1570,Learned from IX route-server
+13058:1200,Learned from customer
+13058:1900,Learned from transit
+#
+13058:20361,Learned at Berlin, A36-X
+13058:20362,Learned at Berlin, A36-Y
+13058:21051,Learned at Berlin, L105-X
+13058:21052,Learned at Berlin, L105-Y
+#
+13058:30361,Advertised from Berlin, A36-X
+13058:30362,Advertised from Berlin, A36-Y
+13058:31051,Advertised from Berlin, L105-X
+13058:31052,Advertised from Berlin, L105-Y
+#
+13058:44930,via BCIX
+13058:44969,via DE-CIX-FRA
+#
+13058:0:0,Do not advertise
+13058:1:nnn,Advertise to AS$0
